@@ -1,0 +1,49 @@
+body { margin: 0; overflow: hidden; font-family: "Eagle Lake", cursive; 20px; background-color: #9900aa;}
+
+#container { 
+	width: 75%; 
+	height: 75%;
+	margin: auto;
+	margin-top: 100px;
+	text-align: center;
+
+}
+
+
+
+header {
+	color: white;
+	font-family: inherit;
+	position: absolute;
+	bottom: 0;
+	left:0;
+	right: 0;
+}
+
+#information {
+	width: 200px;
+	
+	margin: auto;
+	text-align: center;
+}
+
+#information p {
+	color: white;
+	font-family: courier;
+	font-size: 18px;
+	opacity: 0;
+	transition: opacity 400ms;
+	background: rgba(0,0,0,0.6);
+	margin-bottom: 0;
+}
+
+#information:hover p{
+	opacity: 1;
+	
+}
+
+h1 {
+	font-size: 40px;
+	margin: 0;
+	background: rgba(0,0,0,0.6);
+}

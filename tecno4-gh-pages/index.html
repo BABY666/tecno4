@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>%%%</title>
+		<link href="https://fonts.googleapis.com/css?family=Eagle+Lake" rel="stylesheet"> 
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<header>
+			<div id="information">
+				
+				<p>10011001 00000000 00100010</p>
+				<h1>%%%</h1>
+			</div>
+		</header>
+		<div id="container"></div>
+		<script src="js/three.min.js"></script>
+
+
+		<script type="x-shader/x-vertex" id="vertexShader2">
+		    //
+		    // GLSL textureless classic 3D noise "cnoise",
+		    // with an RSL-style periodic variant "pnoise".
+		    // Author:  Stefan Gustavson (stefan.gustavson@liu.se)
+		    // Version: 2011-10-11
+		    //
+		    // Many thanks to Ian McEwan of Ashima Arts for the
+		    // ideas for permutation and gradient selection.
+		    //
+		    // Copyright (c) 2011 Stefan Gustavson. All rights reserved.
+		    // Distributed under the MIT license. See LICENSE file.
+		    // https://github.com/stegu/webgl-noise
+		    //
+
+		    vec3 mod289(vec3 x)
+		    {
+		    return x - floor(x * (1.0 / 289.0)) * 289.0;
+		    }
+
+		    vec4 mod289(vec4 x)
+		    {
+		    return x - floor(x * (1.0 / 289.0)) * 289.0;
+		    }
+
+		    vec4 permute(vec4 x)
+		    {
+		    return mod289(((x*34.0)+1.0)*x);
+		    }
+
+		    vec4 taylorInvSqrt(vec4 r)
+		    {
+		    return 1.79284291400159 - 0.85373472095314 * r;
+		    }
+
+		    vec3 fade(vec3 t) {
+		    return t*t*t*(t*(t*6.0-15.0)+10.0);
+		    }
+
+		    // Classic Perlin noise
+		    float cnoise(vec3 P)
+		    {
+		    vec3 Pi0 = floor(P); // Integer part for indexing
+		    vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
+		    Pi0 = mod289(Pi0);
+		    Pi1 = mod289(Pi1);
+		    vec3 Pf0 = fract(P); // Fractional part for interpolation
+		    vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+		    vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+		    vec4 iy = vec4(Pi0.yy, Pi1.yy);
+		    vec4 iz0 = Pi0.zzzz;
+		    vec4 iz1 = Pi1.zzzz;
+
+		    vec4 ixy = permute(permute(ix) + iy);
+		    vec4 ixy0 = permute(ixy + iz0);
+		    vec4 ixy1 = permute(ixy + iz1);
+
+		    vec4 gx0 = ixy0 * (1.0 / 7.0);
+		    vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
+		    gx0 = fract(gx0);
+		    vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+		    vec4 sz0 = step(gz0, vec4(0.0));
+		    gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+		    gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+
+		    vec4 gx1 = ixy1 * (1.0 / 7.0);
+		    vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
+		    gx1 = fract(gx1);
+		    vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+		    vec4 sz1 = step(gz1, vec4(0.0));
+		    gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+		    gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+
+		    vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+		    vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+		    vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+		    vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+		    vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+		    vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+		    vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+		    vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+
+		    vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+		    g000 *= norm0.x;
+		    g010 *= norm0.y;
+		    g100 *= norm0.z;
+		    g110 *= norm0.w;
+		    vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+		    g001 *= norm1.x;
+		    g011 *= norm1.y;
+		    g101 *= norm1.z;
+		    g111 *= norm1.w;
+
+		    float n000 = dot(g000, Pf0);
+		    float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+		    float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+		    float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+		    float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+		    float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+		    float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+		    float n111 = dot(g111, Pf1);
+
+		    vec3 fade_xyz = fade(Pf0);
+		    vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+		    vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+		    float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+		    return 2.2 * n_xyz;
+		    }
+
+		    // Classic Perlin noise, periodic variant
+		    float pnoise(vec3 P, vec3 rep)
+		    {
+		      vec3 Pi0 = mod(floor(P), rep); // Integer part, modulo period
+		      vec3 Pi1 = mod(Pi0 + vec3(1.0), rep); // Integer part + 1, mod period
+		      Pi0 = mod289(Pi0);
+		      Pi1 = mod289(Pi1);
+		      vec3 Pf0 = fract(P); // Fractional part for interpolation
+		      vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+		      vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+		      vec4 iy = vec4(Pi0.yy, Pi1.yy);
+		      vec4 iz0 = Pi0.zzzz;
+		      vec4 iz1 = Pi1.zzzz;
+
+		      vec4 ixy = permute(permute(ix) + iy);
+		      vec4 ixy0 = permute(ixy + iz0);
+		      vec4 ixy1 = permute(ixy + iz1);
+
+		      vec4 gx0 = ixy0 * (1.0 / 7.0);
+		      vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
+		      gx0 = fract(gx0);
+		      vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+		      vec4 sz0 = step(gz0, vec4(0.0));
+		      gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+		      gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+
+		      vec4 gx1 = ixy1 * (1.0 / 7.0);
+		      vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
+		      gx1 = fract(gx1);
+		      vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+		      vec4 sz1 = step(gz1, vec4(0.0));
+		      gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+		      gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+
+		      vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+		      vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+		      vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+		      vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+		      vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+		      vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+		      vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+		      vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+
+		      vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+		      g000 *= norm0.x;
+		      g010 *= norm0.y;
+		      g100 *= norm0.z;
+		      g110 *= norm0.w;
+		      vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+		      g001 *= norm1.x;
+		      g011 *= norm1.y;
+		      g101 *= norm1.z;
+		      g111 *= norm1.w;
+
+		      float n000 = dot(g000, Pf0);
+		      float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+		      float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+		      float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+		      float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+		      float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+		      float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+		      float n111 = dot(g111, Pf1);
+
+		      vec3 fade_xyz = fade(Pf0);
+		      vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+		      vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+		      float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+		      return 2.2 * n_xyz;
+		  }
+
+		  varying vec2 vUv;
+		  varying float noise;
+		  uniform float time;
+			uniform float sync;
+			uniform float amp;
+
+		  float turbulence( vec3 p ) {
+		      float w = 100.0;
+		      float t = -.5;
+		      for (float f = 1.0 ; f <= 10.0 ; f++ ){
+		          float power = pow( 2.0, f );
+		          t += abs( pnoise( vec3( power * p ), vec3( 10.0, 10.0, 10.0 ) ) / power );
+		      }
+		      return t;
+		  }
+
+		  void main() {
+
+		      vUv = uv;
+
+		      // add time to the noise parameters so it's animated
+		      noise = 10.0 *  -.10 * turbulence( .5 * normal );
+		      float b =	5.0 * pnoise( 0.05 * position + vec3( 2.0 * time ), vec3( 100.0 ) ) / amp ;
+		      float displacement = - noise + b;
+
+		      vec3 newPosition = position + normal * displacement;
+		      gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition , 1.0 );
+
+		  }
+
+		</script>
+
+		<script type="x-shader/x-vertex" id="fragmentShader2">
+				varying vec2 vUv;
+				varying float noise;
+				uniform float sync;
+
+
+				void main() {
+					vec2 position = -1.0 + 2.0 * vUv;
+					float red = abs(sin(noise ));
+					float green = abs(sin(noise)*position.y);
+					float blue = abs(sin( noise)*position.x);
+					gl_FragColor = vec4(red, green, blue, 1.0);
+					}
+		</script>
+		<script type="text/javascript">
+			
+			
+			//particle system credits to https://aerotwist.com/tutorials/creating-particles-with-three-js/
+			// and a lot of mr doob examples muchas gracias
+			// perlin noise shader from (perlin noise shader tutorial)
+			//web audio api data from blahablh
+			// la pagina de los ejemplos stemoski tambien
+			//
+			/////
+
+			var scene, camera, renderer;
+			var light1, light2, sphere, plano;
+			var ambientLight = new THREE.AmbientLight(0x990022);
+			var lightColor = [0x330988, 0x4499DD, 0xEE00EE];
+			var particles, geometry;
+			var ctx; //audio context
+			var bufA1, bufA2, bufA3, bufB, bufC1, bufC2, bufC3; //audio buffer
+			var t, start = Date.now();
+			var mouseX = 0, mouseY = 0;
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+/// initialize audio
+			var contextClass = (window.AudioContext ||
+				window.webkitAudioContext ||
+				window.mozAudioContext ||
+				window.oAudioContext ||
+				window.msAudioContext);
+			if (contextClass) {
+				// Web Audio API is available.
+				ctx = new contextClass();
+				console.log("cargo")
+
+			} else {
+				// Web Audio API is not available. Ask the user to use a supported browser.
+			}
+			
+
+
+	///
+			function init(){
+
+					renderer = new THREE.WebGLRenderer({antialias:true});
+					renderer.setSize( window.innerWidth*0.75, window.innerHeight*0.75);
+					document.querySelector("#container").appendChild(renderer.domElement);
+
+					scene = new THREE.Scene();
+					camera = new THREE.PerspectiveCamera( 75,
+            window.innerWidth/ window.innerHeight,
+            1,
+            5000 );
+					camera.position.z = -200;
+
+
+
+					light1 = new THREE.PointLight(lightColor[0], 6 , 150);
+					light1.position.set(0,100,-100);
+
+					scene.add(light1);
+					scene.add(ambientLight);
+
+					light2 = new THREE.PointLight(lightColor[1], 7 , 150);
+					light2.position.set(0,-100,100);
+
+					scene.add(light2);
+				
+
+					/// shader material
+					material = new THREE.ShaderMaterial({
+						side: THREE.DoubleSide,
+						uniforms: {
+								amp: {
+									type: "f",
+									value: 0.0
+								},
+								sync:{
+									type: "f",
+									value: 0.0
+								},
+		            time: { //float initialized to 0
+                type: "f",
+                value: 0.0
+              }
+            },
+            vertexShader: document.getElementById('vertexShader2').textContent,
+            fragmentShader: document.getElementById('fragmentShader2').textContent
+          } );
+					var material2 = new THREE.MeshPhongMaterial( { color: 0xdddddd, specular: 0x999933, shininess: 20 , side: THREE.DoubleSide});
+
+
+					//sphere
+					sphere1 = new THREE.Mesh(new THREE.SphereGeometry(40,32,16), material2);
+					sphere1.position.set(-200,0,0);
+					scene.add(sphere1);
+					sphere2 = new THREE.Mesh(new THREE.SphereGeometry(40,32,16), material2);
+					sphere2.position.set(0,0,0);
+					scene.add(sphere2);
+					sphere3 = new THREE.Mesh(new THREE.SphereGeometry(40,32,16), material2);
+					sphere3.position.set(200,0,0);
+					scene.add(sphere3);
+					camera.lookAt(scene.position);
+
+					// plano
+					plano = new THREE.Mesh(
+						new THREE.PlaneGeometry(250, 250,200,200),
+						material
+					);
+					scene.add(plano);
+
+					//texture loader
+					var textureLoader = new THREE.TextureLoader();
+					var sprite1 = textureLoader.load( "textures/sprites/chip.png" );
+
+					// particles
+					var pointsMaterial = new THREE.PointsMaterial({
+							size: 3, map: sprite1, blending: THREE.AdditiveBlending, transparent : true });
+					geometry = new THREE.Geometry();
+					for ( i = 0; i < 1000; i ++ ) {
+						var vertex = new THREE.Vector3();
+						vertex.x = Math.random() * 400 - 200;
+						vertex.y = Math.random() * 400 - 200;
+						vertex.z = Math.random() * 400 - 200;
+						geometry.vertices.push( vertex );
+					}
+					particles = new THREE.Points(geometry, pointsMaterial);
+					scene.add(particles);
+
+
+
+					loadFileA1();
+					loadFileA2();
+					loadFileA3()
+					loadFileB();
+					loadFileC1();
+					loadFileC2();
+					loadFileC3();
+
+///
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+				}
+////// funciones de control (mouse)
+				function onDocumentMouseMove( event ) {
+
+					mouseX = event.clientX - windowHalfX;
+					mouseY = event.clientY - windowHalfY;
+
+				}
+
+				function onWindowResize() {
+
+					windowHalfX = window.innerWidth / 2;
+					windowHalfY = window.innerHeight / 2;
+
+					camera.aspect = window.innerWidth / window.innerHeight;
+					camera.updateProjectionMatrix();
+
+					renderer.setSize( window.innerWidth, window.innerHeight );
+
+				}
+
+
+
+
+/*/// TABLA DE ORGANIZACION DE VARIABLES  /  REFERENCIA
+		***A = particulas %
+			triggereadores de A / determinan cada cuanto se triggerea / y nada mas por ahora
+			. go1 = a1
+			. go2 = a2
+			. go"3" = a3
+			variadores de A segun mouseXY
+			. mX = aMx
+			. mY = aMy
+			cargador d archivos de A y reproductor
+			. loadfileA1, loadfileA2, etc
+			. bufA
+			. playA (si hubiera mas formas de reproducir sustituir x playA1, playA2, etc)
+			contadores de tiempo/frames (ex n)
+			. nA1, nA2, nA3
+
+		***B = bajos y esferas creo //// o plano eso no se decidio todavia
+			triggereadores de B / determinan cada cuanto se triggerea / y el pitch x ahora
+			. ex go3 = b1 , b2, etc
+			variadores de B  segun mouseXY
+			. bMx, bMy
+			cargador de archivos de B y reproductor
+			. loadfileB, bufB, playB
+			contadores de tiempo/frames (ex n)
+			. nB1 , nB2, etc
+
+		***C = tercer sonido desconocido y relacion con el otro elemento (plano supongo)
+			triggereadores de C / determinan cada cuanto se triggerea
+			. c1, c2
+			variadores de C segun mouseXY
+			. cMx, cMy
+			cargador de archivos de C y reproductor
+			. loadfileC, bufC, playC
+			contadores de tiempo/frames (ex n)
+			. nC1, nC2 etc
+*/
+
+				var nA1 = 0, nA2 = 0, nA3 = 0;
+				var a1 = 60, a2 = 120, a3 = 80;
+
+				var nB1 = 0;
+				var b1 = 92;
+
+				var nC1 = 0, nC2 = 0;
+				var c1 = 50, c2 = 60;
+				var cMx, cMy;
+
+				var rotation = 0;
+
+				var b = 40; //controla el spawn maximo del random d b1, es decir cada cuando suena los bajos y cual es el rango d frecuencias posibles. o algo asi //redactar mejor//
+				var aMx = 10 // controla el tiempo de spawm maximo de go1 y go2 (particles)
+				var aMy = 10 //controla el pitch de particles
+
+			function render() {
+
+				//actualizar variables
+					t = Date.now() * 0.00005;
+					nA1 ++;
+					nA2 ++;
+					nA3 ++;
+					nB1 ++;
+					nC1 ++;
+					nC2 ++;
+
+					rotation += 0.005;
+					aMx = map(mouseX,-683,682,2,30);
+					aMy = map(mouseY,-339, 338,300,450);
+					cMx = map(mouseX,-683,682,50,10);
+
+
+					if (a1 == nA1 ){
+							playA1(a1);
+							nA1= 0;
+							a1 = getRandomInt(1,aMx);
+							for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
+
+								geometry.vertices[ i ].x += (Math.random()-0.5) * aMx;
+
+							}
+					};
+
+					if (a2 == nA2 ){
+							playA2(a2);
+							nA2 = 0;
+							a2 = getRandomInt(1,aMx);
+							for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
+
+								geometry.vertices[ i ].y += (Math.random()-0.5) * aMx;
+
+							}
+					};
+
+					if (a3 == nA3){
+						playA3(a3);
+						nA3 = 0;
+						ar = getRandomInt(1, aMx);
+						for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
+
+							geometry.vertices[ i ].y += (Math.random()-0.5) * aMx ;
+
+						}
+					};
+
+					if (b1 == nB1 ){
+							console.log(b1);
+						  playB(b1);
+							nB1= 0;
+							light1.position.x = (b1 - 20) * 10  ;// se usa b1 - 20 porque sabemos q los valores q puede tomar b1 son de 1 a 40, b es constante
+							light2.position.x = (- b1 + 20) * 10  ;
+							b1 = getRandomInt(13,b); // variable max 40
+
+					};
+
+					if (c1 == nC1){
+							playC1(c1);
+							l
+							material.uniforms[ 'sync' ].value = getRandomInt(5,20);
+							nC1 = 0;
+							c1 = getRandomInt(7,cMx);
+					}
+
+
+
+					particles.geometry.verticesNeedUpdate = true;
+
+					plano.rotation.z = rotation/3;
+					plano.rotation.x = rotation/2;
+
+					camera.position.x += ( (mouseX/4) - camera.position.x ) * 0.05;
+					camera.position.y += ( - (mouseY/3) - camera.position.y ) * 0.05;
+
+					camera.lookAt( scene.position );
+
+					material.uniforms[ 'time' ].value = .0005 * ( Date.now() - start );
+					material.uniforms[ 'amp' ].value = cMx / 70 ;
+
+
+					requestAnimationFrame( render );
+					renderer.render(scene, camera);
+			};
+
+			function loadFileA1() {
+					var req = new XMLHttpRequest();
+					req.open("GET","sounds/A1.wav",true);
+					req.responseType = "arraybuffer";
+					req.onload = function() {
+							//decode the loaded data
+							ctx.decodeAudioData(req.response, function(buffer) {
+									bufA1 = buffer;
+
+							});
+					};
+					req.send();
+										console.log("A1 load ok");
+
+			}
+
+			function loadFileA2() {
+					var req = new XMLHttpRequest();
+					req.open("GET","sounds/A2.wav",true);
+					req.responseType = "arraybuffer";
+					req.onload = function() {
+							//decode the loaded data
+							ctx.decodeAudioData(req.response, function(buffer) {
+									bufA2 = buffer;
+
+							});
+					};
+					req.send();
+					console.log("A2 load ok");
+			}
+
+			function loadFileA3() {
+					var req = new XMLHttpRequest();
+					req.open("GET","sounds/A3.wav",true);
+					req.responseType = "arraybuffer";
+					req.onload = function() {
+							//decode the loaded data
+							ctx.decodeAudioData(req.response, function(buffer) {
+									bufA3 = buffer;
+
+							});
+					};
+					req.send();
+					console.log("A3 load ok");
+			}
+
+
+			function loadFileB() {
+					var req = new XMLHttpRequest();
+					req.open("GET","sounds/B4.wav",true);
+					req.responseType = "arraybuffer";
+					req.onload = function() {
+							//decode the loaded data
+							ctx.decodeAudioData(req.response, function(buffer) {
+									bufB = buffer;
+
+							});
+					};
+					req.send();
+					console.log("b load ok");
+			}
+
+			function loadFileC1() {
+					var req = new XMLHttpRequest();
+					req.open("GET","sounds/CC1.wav",true);
+					req.responseType = "arraybuffer";
+					req.onload = function() {
+							//decode the loaded data
+							ctx.decodeAudioData(req.response, function(buffer) {
+									bufC1 = buffer;
+
+							});
+					};
+					req.send();
+					console.log("c1 load ok");
+
+			}
+
+			function loadFileC2() {
+					var req = new XMLHttpRequest();
+					req.open("GET","sounds/CC2.wav",true);
+					req.responseType = "arraybuffer";
+					req.onload = function() {
+							//decode the loaded data
+							ctx.decodeAudioData(req.response, function(buffer) {
+									bufC2 = buffer;
+
+							});
+					};
+					req.send();
+					console.log("c2 load ok");
+			}
+
+			function loadFileC3() {
+					var req = new XMLHttpRequest();
+					req.open("GET","sounds/CC2.wav",true);
+					req.responseType = "arraybuffer";
+					req.onload = function() {
+							//decode the loaded data
+							ctx.decodeAudioData(req.response, function(buffer) {
+									bufC3 = buffer;
+
+							});
+					};
+					req.send();
+										console.log("c3 load ok");
+
+			}
+////////////////
+
+/// agregar el numero q random como argumento a play para que conctrole un
+/// nodo de audiopanner y uno que le controle la ganancia (minimamente)
+			function playA1(r) {
+				var src = ctx.createBufferSource();
+				src.buffer = bufA1;
+				src.detune.value =  getRandomInt(100,aMy); //este otro valor puede cambiar segun mouse x!!
+				var gain = ctx.createGain();
+				gain.gain.value = (Math.random(30)* /**/cMx/150 );//este valor tamb podria ser controlado segun mouse y
+				var panner = ctx.createStereoPanner();
+				panner.pan.value= (getRandomInt(-100,100))/100;
+				src.connect(panner);
+				panner.connect(gain);
+				gain.connect(ctx.destination);
+				src.start(ctx.currentTime);
+			}
+
+			function playA2(r) {
+				var src = ctx.createBufferSource();
+				src.buffer = bufA2;
+				src.detune.value =  getRandomInt(100,aMy); //este otro valor puede cambiar segun mouse x!!
+				var gain = ctx.createGain();
+				gain.gain.value = (Math.random(30)* /**/cMx/150 );//este valor tamb podria ser controlado segun mouse y
+				var panner = ctx.createStereoPanner();
+				panner.pan.value= (getRandomInt(-100,100))/100;
+				src.connect(panner);
+				panner.connect(gain);
+				gain.connect(ctx.destination);
+				src.start(ctx.currentTime);
+			}
+
+			function playA3(r) {
+				var src = ctx.createBufferSource();
+				src.buffer = bufA3;
+				src.detune.value =  getRandomInt(100,aMy); //este otro valor puede cambiar segun mouse x!!
+				var gain = ctx.createGain();
+				gain.gain.value = (Math.random(30)* /**/cMx/150 );//este valor tamb podria ser controlado segun mouse y
+
+				var panner = ctx.createStereoPanner();
+				panner.pan.value= (getRandomInt(-100,100))/100;
+				src.connect(panner);
+				panner.connect(gain);
+				gain.connect(ctx.destination);
+				src.start(ctx.currentTime);
+			}
+
+
+			function playB(r) {
+				var src = ctx.createBufferSource();
+				src.buffer = bufB;
+				src.detune.value = (r - b/2) * ( - 10); //este otro valor puede cambiar segun mouse x!!
+				var gain = ctx.createGain();
+				gain.gain.value = (getRandomInt(50,99) / 100 /**/);
+				console.log(gain.gain.value);
+				var panner = ctx.createStereoPanner();
+				panner.pan.value= (getRandomInt(-100,100))/100;
+				src.connect(panner);
+				panner.connect(gain);
+				gain.connect(ctx.destination);
+				src.start(ctx.currentTime);
+			}
+
+			function playC1(r) {
+				var src = ctx.createBufferSource();
+				src.buffer = bufC1;
+				src.detune.value =  getRandomInt(1,aMy/4); //este otro valor puede cambiar segun mouse x!!
+				var gain = ctx.createGain();
+				gain.gain.value = (Math.random(24)/ /**/cMx*20 );
+			//este valor tamb podria ser controlado segun mouse y
+				var panner = ctx.createStereoPanner();
+				panner.pan.value= (getRandomInt(-20,20))/100;
+				src.connect(gain);
+				gain.connect(panner);
+				gain.connect(ctx.destination);
+				src.start(ctx.currentTime);
+			}
+
+
+
+
+			function getRandomInt(min, max) {
+			  return Math.floor(Math.random() * (max - min)) + min;
+			}
+
+/*
+
+If your number X falls between A and B, and you would like Y to fall between C and D, you can apply the following linear transform:
+
+Y = (X-A)/(B-A) * (D-C) + C*/
+			function map(x,a,b,c,d){
+				var y = (x-a)/(b-a)*(d-c)+c;
+				return y;
+			}
+
+			init();
+			render();
+
+
+
+		</script>
+	</body>
+</html>
