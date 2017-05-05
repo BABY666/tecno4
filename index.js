@@ -9,12 +9,12 @@
 			var boton = document.querySelector("#boton");
 			boton.addEventListener("click", function() { 
 				var lander = document.querySelector("#lander");
-				var content = document.querySelector("#content");
+			var content = document.querySelector("#container");
 
-				lander.classList.add("invisible");
-	    		content.classList.remove("invisible");
+			lander.classList.add("invisible");
+    		content.classList.remove("invisible");
 
-			});
+		});
 
 
 			var scene, camera, renderer;
