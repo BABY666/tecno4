@@ -6,6 +6,16 @@
 			// la pagina de los ejemplos stemoski tambien
 			//
 			/////
+			var boton = document.querySelector("#boton");
+			boton.addEventListener("click", function() { 
+				var lander = document.querySelector("#lander");
+				var content = document.querySelector("#content");
+
+				lander.classList.add("invisible");
+	    		content.classList.remove("invisible");
+
+			});
+
 
 			var scene, camera, renderer;
 			var light1, light2, sphere, plano;
