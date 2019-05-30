@@ -19,7 +19,7 @@ body { margin: 0;
 }
 
 #lander {
-	background: red;
+	background: black;
 	margin: 0;
 	width: 100vw;
 	height: 100vh;
@@ -27,7 +27,6 @@ body { margin: 0;
 
 #information {
 	width: 200px;
-	
 	margin: auto;
 	text-align: center;
 }
@@ -45,6 +44,21 @@ body { margin: 0;
 #information:hover p{
 	opacity: 1;
 	
+}
+
+#boton {
+	display: block;
+	background: none;
+	color: white;
+	border: none;
+	font-size: 20px;
+	margin:auto;
+	margin-top: 50vh;
+}
+
+#boton:hover {
+	cursor: pointer;
+	text-decoration: underline;
 }
 
 h1 {
