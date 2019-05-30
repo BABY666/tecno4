@@ -46,6 +46,18 @@ body { margin: 0;
 	
 }
 
+#loadingAndStart {
+	width: 200px;
+	display: block;
+	margin:auto;
+	margin-top: 40vh;
+}
+img {
+	display:block;
+	height: 100px;
+	width: 100px;
+	margin:auto;
+}
 #boton {
 	display: block;
 	background: none;
@@ -53,7 +65,6 @@ body { margin: 0;
 	border: none;
 	font-size: 20px;
 	margin:auto;
-	margin-top: 50vh;
 }
 
 #boton:hover {
