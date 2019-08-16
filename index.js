@@ -38,8 +38,6 @@
 			if (contextClass) {
 				// Web Audio API is available.
 				ctx = new contextClass();
-				console.log("cargo")
-
 			} else {
 				// Web Audio API is not available. Ask the user to use a supported browser.
 			}
@@ -277,7 +275,6 @@
 					};
 
 					if (b1 == nB1 ){
-							console.log(b1);
 						  playB(b1);
 							nB1= 0;
 							light1.position.x = (b1 - 20) * 10  ;// se usa b1 - 20 porque sabemos q los valores q puede tomar b1 son de 1 a 40, b es constante
@@ -326,8 +323,6 @@
 							});
 					};
 					req.send();
-										console.log("A1 load ok");
-
 			}
 
 			function loadFileA2() {
@@ -342,7 +337,6 @@
 							});
 					};
 					req.send();
-					console.log("A2 load ok");
 			}
 
 			function loadFileA3() {
@@ -357,7 +351,6 @@
 							});
 					};
 					req.send();
-					console.log("A3 load ok");
 			}
 
 
@@ -373,7 +366,6 @@
 							});
 					};
 					req.send();
-					console.log("b load ok");
 			}
 
 			function loadFileC1() {
@@ -388,8 +380,6 @@
 							});
 					};
 					req.send();
-					console.log("c1 load ok");
-
 			}
 
 			function loadFileC2() {
@@ -404,7 +394,6 @@
 							});
 					};
 					req.send();
-					console.log("c2 load ok");
 			}
 
 			function loadFileC3() {
@@ -419,8 +408,6 @@
 							});
 					};
 					req.send();
-										console.log("c3 load ok");
-
 			}
 ////////////////
 
@@ -476,7 +463,6 @@
 				src.detune.value = (r - b/2) * ( - 10); //este otro valor puede cambiar segun mouse x!!
 				var gain = ctx.createGain();
 				gain.gain.value = (getRandomInt(50,99) / 100 /**/);
-				console.log(gain.gain.value);
 				var panner = ctx.createStereoPanner();
 				panner.pan.value= (getRandomInt(-100,100))/100;
 				src.connect(panner);
