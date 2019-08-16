@@ -121,11 +121,17 @@ function loadFile(path, buf) {
 	req.open("GET", path, true);
 	req.responseType = "arraybuffer";
 	req.onload = function() {
+		console.log("buf onload", buf);
 		//decode the loaded data
 		ctx.decodeAudioData(req.response, function(buffer) {
-			return buffer;
-		}).then(function (buffer) {
+			console.log("buff on decode",buf);
+			console.log("buffer on decode", buffer);
 			buf = buffer;
+			return buffer
+		}).then((buffer) => {
+			console.log("buffer on response", buffer);
+			console.log("buff on response", buff);
+			buff = buffer;
 		});
 	};
 	req.send();
@@ -309,7 +315,6 @@ src.start(ctx.currentTime);
 
 
 function init(){
-
 	renderer = new THREE.WebGLRenderer({antialias:true});
 	renderer.setSize( window.innerWidth*0.75, window.innerHeight*0.75);
 	document.querySelector("#container").appendChild(renderer.domElement);
@@ -321,19 +326,14 @@ function init(){
 		5000 );
 	camera.position.z = -200;
 
-
-
 	light1 = new THREE.PointLight(lightColor[0], 6 , 150);
 	light1.position.set(0,100,-100);
-
 	scene.add(light1);
 	scene.add(ambientLight);
 
 	light2 = new THREE.PointLight(lightColor[1], 7 , 150);
 	light2.position.set(0,-100,100);
-
 	scene.add(light2);
-
 
 	/// shader material
 	material = new THREE.ShaderMaterial({
@@ -356,7 +356,6 @@ function init(){
 		fragmentShader: document.getElementById('fragmentShader2').textContent
 	} );
 	var material2 = new THREE.MeshPhongMaterial( { color: 0xdddddd, specular: 0x999933, shininess: 20 , side: THREE.DoubleSide});
-
 
 	//sphere
 	sphere1 = new THREE.Mesh(new THREE.SphereGeometry(40,32,16), material2);
@@ -412,97 +411,91 @@ function init(){
 	// loadFileC2();
 	// loadFileC3();
 
-///
-
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 	window.addEventListener( 'resize', onWindowResize, false );
 }
 
 function render() {
+	// actualizar variables
+	t = Date.now() * 0.00005;
+	nA1 ++;
+	nA2 ++;
+	nA3 ++;
+	nB1 ++;
+	nC1 ++;
+	nC2 ++;
+	rotation += 0.005;
+	aMx = map(mouseX,-683,682,2,30);
+	aMy = map(mouseY,-339, 338,300,450);
+	cMx = map(mouseX,-683,682,50,10);
 
-	//actualizar variables
-		t = Date.now() * 0.00005;
-		nA1 ++;
-		nA2 ++;
-		nA3 ++;
-		nB1 ++;
-		nC1 ++;
-		nC2 ++;
-
-		rotation += 0.005;
-		aMx = map(mouseX,-683,682,2,30);
-		aMy = map(mouseY,-339, 338,300,450);
-		cMx = map(mouseX,-683,682,50,10);
-
-
-		if (a1 == nA1 ){
-				playA1(a1);
-				nA1= 0;
-				a1 = getRandomInt(1,aMx);
-				for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
-
-					geometry.vertices[ i ].x += (Math.random()-0.5) * aMx;
-
-				}
-		};
-
-		if (a2 == nA2 ){
-				playA2(a2);
-				nA2 = 0;
-				a2 = getRandomInt(1,aMx);
-				for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
-
-					geometry.vertices[ i ].y += (Math.random()-0.5) * aMx;
-
-				}
-		};
-
-		if (a3 == nA3){
-			playA3(a3);
-			nA3 = 0;
-			ar = getRandomInt(1, aMx);
+	// reproducción de sonidos
+	if (a1 == nA1 ){
+			playA1(a1);
+			nA1= 0;
+			a1 = getRandomInt(1,aMx);
 			for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
 
-				geometry.vertices[ i ].y += (Math.random()-0.5) * aMx ;
+				geometry.vertices[ i ].x += (Math.random()-0.5) * aMx;
 
 			}
-		};
+	};
 
-		if (b1 == nB1 ){
-				playB(b1);
-				nB1= 0;
-				light1.position.x = (b1 - 20) * 10  ;// se usa b1 - 20 porque sabemos q los valores q puede tomar b1 son de 1 a 40, b es constante
-				light2.position.x = (- b1 + 20) * 10  ;
-				b1 = getRandomInt(13,b); // variable max 40
+	if (a2 == nA2 ){
+			playA2(a2);
+			nA2 = 0;
+			a2 = getRandomInt(1,aMx);
+			for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
 
-		};
+				geometry.vertices[ i ].y += (Math.random()-0.5) * aMx;
 
-		if (c1 == nC1){
-				playC1(c1);
-				l
-				material.uniforms[ 'sync' ].value = getRandomInt(5,20);
-				nC1 = 0;
-				c1 = getRandomInt(7,cMx);
+			}
+	};
+
+	if (a3 == nA3){
+		playA3(a3);
+		nA3 = 0;
+		ar = getRandomInt(1, aMx);
+		for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
+
+			geometry.vertices[ i ].y += (Math.random()-0.5) * aMx ;
+
 		}
+	};
 
+	if (b1 == nB1 ){
+			playB(b1);
+			nB1= 0;
+			light1.position.x = (b1 - 20) * 10  ;// se usa b1 - 20 porque sabemos q los valores q puede tomar b1 son de 1 a 40, b es constante
+			light2.position.x = (- b1 + 20) * 10  ;
+			b1 = getRandomInt(13,b); // variable max 40
 
+	};
 
-		particles.geometry.verticesNeedUpdate = true;
+	if (c1 == nC1){
+			playC1(c1);
+			l
+			material.uniforms[ 'sync' ].value = getRandomInt(5,20);
+			nC1 = 0;
+			c1 = getRandomInt(7,cMx);
+	}
 
-		plano.rotation.z = rotation/3;
-		plano.rotation.x = rotation/2;
+	// escena visual
+	particles.geometry.verticesNeedUpdate = true;
 
-		camera.position.x += ( (mouseX/4) - camera.position.x ) * 0.05;
-		camera.position.y += ( - (mouseY/3) - camera.position.y ) * 0.05;
+	plano.rotation.z = rotation/3;
+	plano.rotation.x = rotation/2;
 
-		camera.lookAt( scene.position );
+	camera.position.x += ( (mouseX/4) - camera.position.x ) * 0.05;
+	camera.position.y += ( - (mouseY/3) - camera.position.y ) * 0.05;
 
-		material.uniforms[ 'time' ].value = .0005 * ( Date.now() - start );
-		material.uniforms[ 'amp' ].value = cMx / 70 ;
+	camera.lookAt( scene.position );
 
+	material.uniforms[ 'time' ].value = .0005 * ( Date.now() - start );
+	material.uniforms[ 'amp' ].value = cMx / 70 ;
 
-		requestAnimationFrame( render );
-		renderer.render(scene, camera);
+	requestAnimationFrame( render );
+	renderer.render(scene, camera);
 };
 
 
