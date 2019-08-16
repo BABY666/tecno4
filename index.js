@@ -121,18 +121,12 @@ function loadFile({path, buf}) {
 	req.open("GET", path, true);
 	req.responseType = "arraybuffer";
 	req.onload = function() {
-		console.log("buf onload", buf);
 		//decode the loaded data
 		ctx.decodeAudioData(req.response, function(buffer) {
-			console.log("buff on decode",buf);
 			console.log("buffer on decode", buffer);
 			buf = buffer;
 			return buffer
-		}).then((buffer) => {
-			console.log("buffer on response", buffer);
-			console.log("buff on response", buf);
-			buf = buffer;
-		});
+		})
 	};
 	req.send();
 }
@@ -410,6 +404,7 @@ function init(){
 	// loadFileC1();
 	// loadFileC2();
 	// loadFileC3();
+	console.log("bufA1", bufA1);
 
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 	window.addEventListener( 'resize', onWindowResize, false );
