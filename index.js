@@ -116,7 +116,7 @@ function onWindowResize() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-function loadFile({path, buf}) {
+function loadFile(path) {
 	var req = new XMLHttpRequest();
 	req.open("GET", path, true);
 	req.responseType = "arraybuffer";
@@ -388,22 +388,21 @@ function init(){
 	particles = new THREE.Points(geometry, pointsMaterial);
 	scene.add(particles);
 
-
-	loadFile({path: "sounds/A1.wav",  buf: bufA1});
-	loadFile({path: "sounds/A2.wav",  buf: bufA2});
-	loadFile({path: "sounds/A3.wav",  buf: bufA3});
-	loadFile({path: "sounds/B4.wav",  buf: bufB});
-	loadFile({path: "sounds/CC1.wav", buf: bufC1});
-	loadFile({path: "sounds/CC2.wav", buf: bufC2});
-	loadFile({path: "sounds/CC2.wav", buf: bufC3});
+	loadFile("sounds/A1.wav").then(function (buffer) {bufA1 = buffer});
+	// loadFile({path: "sounds/A2.wav",  buf: bufA2});
+	// loadFile({path: "sounds/A3.wav",  buf: bufA3});
+	// loadFile({path: "sounds/B4.wav",  buf: bufB});
+	// loadFile({path: "sounds/CC1.wav", buf: bufC1});
+	// loadFile({path: "sounds/CC2.wav", buf: bufC2});
+	// loadFile({path: "sounds/CC2.wav", buf: bufC3});
 
 	// loadFileA1();
-	// loadFileA2();
-	// loadFileA3()
-	// loadFileB();
-	// loadFileC1();
-	// loadFileC2();
-	// loadFileC3();
+	loadFileA2();
+	loadFileA3()
+	loadFileB();
+	loadFileC1();
+	loadFileC2();
+	loadFileC3();
 	console.log("bufA1", bufA1);
 
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
