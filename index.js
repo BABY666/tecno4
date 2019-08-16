@@ -116,7 +116,7 @@ function onWindowResize() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-function loadFile(path, buf) {
+function loadFile({path, buf}) {
 	var req = new XMLHttpRequest();
 	req.open("GET", path, true);
 	req.responseType = "arraybuffer";
@@ -130,8 +130,8 @@ function loadFile(path, buf) {
 			return buffer
 		}).then((buffer) => {
 			console.log("buffer on response", buffer);
-			console.log("buff on response", buff);
-			buff = buffer;
+			console.log("buff on response", buf);
+			buf = buffer;
 		});
 	};
 	req.send();
@@ -395,13 +395,13 @@ function init(){
 	scene.add(particles);
 
 
-	loadFile("sounds/A1.wav", bufA1);
-	loadFile("sounds/A2.wav", bufA2);
-	loadFile("sounds/A3.wav", bufA3);
-	loadFile("sounds/B4.wav", bufB);
-	loadFile("sounds/CC1.wav", bufC1);
-	loadFile("sounds/CC2.wav", bufC2);
-	loadFile("sounds/CC2.wav", bufC3);
+	loadFile({path: "sounds/A1.wav",  buf: bufA1});
+	loadFile({path: "sounds/A2.wav",  buf: bufA2});
+	loadFile({path: "sounds/A3.wav",  buf: bufA3});
+	loadFile({path: "sounds/B4.wav",  buf: bufB});
+	loadFile({path: "sounds/CC1.wav", buf: bufC1});
+	loadFile({path: "sounds/CC2.wav", buf: bufC2});
+	loadFile({path: "sounds/CC2.wav", buf: bufC3});
 
 	// loadFileA1();
 	// loadFileA2();
