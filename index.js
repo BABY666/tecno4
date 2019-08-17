@@ -388,7 +388,7 @@ function init(){
 	particles = new THREE.Points(geometry, pointsMaterial);
 	scene.add(particles);
 
-	loadFile("sounds/A1.wav", bufA1);
+	loadFile("sounds/A1.wav", "bufA1");
 	// loadFile({path: "sounds/A2.wav",  buf: bufA2});
 	// loadFile({path: "sounds/A3.wav",  buf: bufA3});
 	// loadFile({path: "sounds/B4.wav",  buf: bufB});
