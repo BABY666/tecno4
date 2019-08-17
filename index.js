@@ -248,7 +248,7 @@ src.start(ctx.currentTime);
 
 function playA2(r) {
 var src = ctx.createBufferSource();
-src.buffer = bufA2;
+src.buffer = buffers.bufA2;
 src.detune.value =  getRandomInt(100,aMy); //este otro valor puede cambiar segun mouse x!!
 var gain = ctx.createGain();
 gain.gain.value = (Math.random(30)* /**/cMx/150 );//este valor tamb podria ser controlado segun mouse y
@@ -262,7 +262,7 @@ src.start(ctx.currentTime);
 
 function playA3(r) {
 var src = ctx.createBufferSource();
-src.buffer = bufA3;
+src.buffer = buffers.bufA3;
 src.detune.value =  getRandomInt(100,aMy); //este otro valor puede cambiar segun mouse x!!
 var gain = ctx.createGain();
 gain.gain.value = (Math.random(30)* /**/cMx/150 );//este valor tamb podria ser controlado segun mouse y
@@ -278,7 +278,7 @@ src.start(ctx.currentTime);
 
 function playB(r) {
 var src = ctx.createBufferSource();
-src.buffer = bufB;
+src.buffer = buffers.bufB;
 src.detune.value = (r - b/2) * ( - 10); //este otro valor puede cambiar segun mouse x!!
 var gain = ctx.createGain();
 gain.gain.value = (getRandomInt(50,99) / 100 /**/);
@@ -292,7 +292,7 @@ src.start(ctx.currentTime);
 
 function playC1(r) {
 var src = ctx.createBufferSource();
-src.buffer = bufC1;
+src.buffer = buffers.bufC1;
 src.detune.value =  getRandomInt(1,aMy/4); //este otro valor puede cambiar segun mouse x!!
 var gain = ctx.createGain();
 gain.gain.value = (Math.random(24)/ /**/cMx*20 );
@@ -389,20 +389,20 @@ function init(){
 	scene.add(particles);
 
 	loadFile("sounds/A1.wav", "bufA1");
-	// loadFile({path: "sounds/A2.wav",  buf: bufA2});
-	// loadFile({path: "sounds/A3.wav",  buf: bufA3});
-	// loadFile({path: "sounds/B4.wav",  buf: bufB});
-	// loadFile({path: "sounds/CC1.wav", buf: bufC1});
-	// loadFile({path: "sounds/CC2.wav", buf: bufC2});
-	// loadFile({path: "sounds/CC2.wav", buf: bufC3});
+	loadFile("sounds/A2.wav", "bufA2");
+	loadFile("sounds/A3.wav", "bufA3");
+	loadFile("sounds/B4.wav", "bufB");
+	loadFile("sounds/CC1.wav", "bufC1");
+	loadFile("sounds/CC2.wav", "bufC2");
+	loadFile("sounds/CC2.wav", "bufC3");
 
 	// loadFileA1();
-	loadFileA2();
-	loadFileA3()
-	loadFileB();
-	loadFileC1();
-	loadFileC2();
-	loadFileC3();
+	// loadFileA2();
+	// loadFileA3()
+	// loadFileB();
+	// loadFileC1();
+	// loadFileC2();
+	// loadFileC3();
 	console.log("buffers", buffers);
 
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
