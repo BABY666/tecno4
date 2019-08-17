@@ -124,7 +124,6 @@ function loadFile(path, buf) {
 	req.onload = function() {
 		//decode the loaded data
 		ctx.decodeAudioData(req.response, function(buffer) {
-			console.log("buffer on decode", buffer);
 			buffers[buf] = buffer;
 		})
 	};
@@ -233,31 +232,31 @@ function loadFileC3() {
 /// agregar el numero q random como argumento a play para que conctrole un
 /// nodo de audiopanner y uno que le controle la ganancia (minimamente)
 function playA1(r) {
-var src = ctx.createBufferSource();
-src.buffer = buffers.bufA1;
-src.detune.value =  getRandomInt(100,aMy); //este otro valor puede cambiar segun mouse x!!
-var gain = ctx.createGain();
-gain.gain.value = (Math.random(30)* /**/cMx/150 );//este valor tamb podria ser controlado segun mouse y
-var panner = ctx.createStereoPanner();
-panner.pan.value= (getRandomInt(-100,100))/100;
-src.connect(panner);
-panner.connect(gain);
-gain.connect(ctx.destination);
-src.start(ctx.currentTime);
+	var src = ctx.createBufferSource();
+	src.buffer = buffers.bufA1;
+	src.detune.value =  getRandomInt(100,aMy); //este otro valor puede cambiar segun mouse x!!
+	var gain = ctx.createGain();
+	gain.gain.value = (Math.random(30)* /**/cMx/150 );//este valor tamb podria ser controlado segun mouse y
+	var panner = ctx.createStereoPanner();
+	panner.pan.value= (getRandomInt(-100,100))/100;
+	src.connect(panner);
+	panner.connect(gain);
+	gain.connect(ctx.destination);
+	src.start(ctx.currentTime);
 }
 
 function playA2(r) {
-var src = ctx.createBufferSource();
-src.buffer = buffers.bufA2;
-src.detune.value =  getRandomInt(100,aMy); //este otro valor puede cambiar segun mouse x!!
-var gain = ctx.createGain();
-gain.gain.value = (Math.random(30)* /**/cMx/150 );//este valor tamb podria ser controlado segun mouse y
-var panner = ctx.createStereoPanner();
-panner.pan.value= (getRandomInt(-100,100))/100;
-src.connect(panner);
-panner.connect(gain);
-gain.connect(ctx.destination);
-src.start(ctx.currentTime);
+	var src = ctx.createBufferSource();
+	src.buffer = buffers.bufA2;
+	src.detune.value =  getRandomInt(100,aMy); //este otro valor puede cambiar segun mouse x!!
+	var gain = ctx.createGain();
+	gain.gain.value = (Math.random(30)* /**/cMx/150 );//este valor tamb podria ser controlado segun mouse y
+	var panner = ctx.createStereoPanner();
+	panner.pan.value= (getRandomInt(-100,100))/100;
+	src.connect(panner);
+	panner.connect(gain);
+	gain.connect(ctx.destination);
+	src.start(ctx.currentTime);
 }
 
 function playA3(r) {
@@ -277,35 +276,33 @@ src.start(ctx.currentTime);
 
 
 function playB(r) {
-var src = ctx.createBufferSource();
-src.buffer = buffers.bufB;
-src.detune.value = (r - b/2) * ( - 10); //este otro valor puede cambiar segun mouse x!!
-var gain = ctx.createGain();
-gain.gain.value = (getRandomInt(50,99) / 100 /**/);
-var panner = ctx.createStereoPanner();
-panner.pan.value= (getRandomInt(-100,100))/100;
-src.connect(panner);
-panner.connect(gain);
-gain.connect(ctx.destination);
-src.start(ctx.currentTime);
+	var src = ctx.createBufferSource();
+	src.buffer = buffers.bufB;
+	src.detune.value = (r - b/2) * ( - 10); //este otro valor puede cambiar segun mouse x!!
+	var gain = ctx.createGain();
+	gain.gain.value = (getRandomInt(50,99) / 100 /**/);
+	var panner = ctx.createStereoPanner();
+	panner.pan.value= (getRandomInt(-100,100))/100;
+	src.connect(panner);
+	panner.connect(gain);
+	gain.connect(ctx.destination);
+	src.start(ctx.currentTime);
 }
 
 function playC1(r) {
-var src = ctx.createBufferSource();
-src.buffer = buffers.bufC1;
-src.detune.value =  getRandomInt(1,aMy/4); //este otro valor puede cambiar segun mouse x!!
-var gain = ctx.createGain();
-gain.gain.value = (Math.random(24)/ /**/cMx*20 );
-//este valor tamb podria ser controlado segun mouse y
-var panner = ctx.createStereoPanner();
-panner.pan.value= (getRandomInt(-20,20))/100;
-src.connect(gain);
-gain.connect(panner);
-gain.connect(ctx.destination);
-src.start(ctx.currentTime);
+	var src = ctx.createBufferSource();
+	src.buffer = buffers.bufC1;
+	src.detune.value =  getRandomInt(1,aMy/4); //este otro valor puede cambiar segun mouse x!!
+	var gain = ctx.createGain();
+	gain.gain.value = (Math.random(24)/ /**/cMx*20 );
+	//este valor tamb podria ser controlado segun mouse y
+	var panner = ctx.createStereoPanner();
+	panner.pan.value= (getRandomInt(-20,20))/100;
+	src.connect(gain);
+	gain.connect(panner);
+	gain.connect(ctx.destination);
+	src.start(ctx.currentTime);
 }
-
-
 
 
 function init(){
@@ -395,15 +392,6 @@ function init(){
 	loadFile("sounds/CC1.wav", "bufC1");
 	loadFile("sounds/CC2.wav", "bufC2");
 	loadFile("sounds/CC2.wav", "bufC3");
-
-	// loadFileA1();
-	// loadFileA2();
-	// loadFileA3()
-	// loadFileB();
-	// loadFileC1();
-	// loadFileC2();
-	// loadFileC3();
-	console.log("buffers", buffers);
 
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 	window.addEventListener( 'resize', onWindowResize, false );
