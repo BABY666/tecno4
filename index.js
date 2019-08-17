@@ -58,6 +58,7 @@ var lightColor = [0x330988, 0x4499DD, 0xEE00EE];
 var particles, geometry;
 var ctx; // audio context
 var bufA1, bufA2, bufA3, bufB, bufC1, bufC2, bufC3; // audio buffer
+var buffers = {};
 var t, start = Date.now();
 var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
@@ -116,7 +117,7 @@ function onWindowResize() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-function loadFile(path) {
+function loadFile(path, buf) {
 	var req = new XMLHttpRequest();
 	req.open("GET", path, true);
 	req.responseType = "arraybuffer";
@@ -124,8 +125,7 @@ function loadFile(path) {
 		//decode the loaded data
 		ctx.decodeAudioData(req.response, function(buffer) {
 			console.log("buffer on decode", buffer);
-			buf = buffer;
-			return buffer
+			buffers[buf] = buffer;
 		})
 	};
 	req.send();
@@ -234,7 +234,7 @@ function loadFileC3() {
 /// nodo de audiopanner y uno que le controle la ganancia (minimamente)
 function playA1(r) {
 var src = ctx.createBufferSource();
-src.buffer = bufA1;
+src.buffer = buffers.bufA1;
 src.detune.value =  getRandomInt(100,aMy); //este otro valor puede cambiar segun mouse x!!
 var gain = ctx.createGain();
 gain.gain.value = (Math.random(30)* /**/cMx/150 );//este valor tamb podria ser controlado segun mouse y
@@ -388,7 +388,7 @@ function init(){
 	particles = new THREE.Points(geometry, pointsMaterial);
 	scene.add(particles);
 
-	loadFile("sounds/A1.wav").then(function (buffer) {bufA1 = buffer});
+	loadFile("sounds/A1.wav", bufA1);
 	// loadFile({path: "sounds/A2.wav",  buf: bufA2});
 	// loadFile({path: "sounds/A3.wav",  buf: bufA3});
 	// loadFile({path: "sounds/B4.wav",  buf: bufB});
@@ -403,7 +403,7 @@ function init(){
 	loadFileC1();
 	loadFileC2();
 	loadFileC3();
-	console.log("bufA1", bufA1);
+	console.log("buffers", buffers);
 
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 	window.addEventListener( 'resize', onWindowResize, false );
